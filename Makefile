@@ -52,3 +52,38 @@ all: $(NAME)
 $(NAME): $(SRCS) $(O_SRCS)
 	$(MAKE) -C $(OLD_PROJ) all
 	$(CC) $(CFLAGS) $(O_SRCS) $(OLD_PROJ)/$(LIB_DIR)/$(LIB) -o $(NAME)
+
+clean:
+	$(MAKE) -C libft clean
+	$(RM_DIR) $(OBJ_DIR)/
+	clear
+
+fclean:
+	$(MAKE) -C libft fclean
+	$(RM_DIR) $(NAME)
+	clear
+
+re: fclean all
+	clear
+
+push:
+	git add .
+	@echo "$(RED)Adding all changes..."
+	sleep 1.5
+	@clear
+	@echo "$(GREEN)All changes added$(NC)"
+	@read -p "Enter a custom commit message (leave blank to use the default message): " message; \
+	if [ -n "$$message" ]; then \
+		git commit -m "$$message"; \
+	else \
+		git commit -m "$(shell date +'%H:%M %d-%h') update"; \
+	fi
+	@echo "$(YELLOW)Committing...and..."
+	git push
+	@echo "$(GREEN)PUSHA KEKKO!$(NC)"
+
+norm:
+	norminette *
+
+.PHONY: all clean fclean re push norm
+.SILENT:
