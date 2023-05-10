@@ -6,7 +6,7 @@
 #    By: cscelfo <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/10 12:09:22 by cscelfo           #+#    #+#              #
-#    Updated: 2023/05/10 12:46:06 by cscelfo          ###   ########.fr        #
+#    Updated: 2023/05/10 16:29:42 by cscelfo          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,8 +44,6 @@ STR_DIR = str
 
 TO_SMTH_DIR = to_smth
 
-SMTH_TO_SMTH_DIR = smth_to_smth
-
 PUT_DIR = put
 
 LST_DIR = list
@@ -61,20 +59,48 @@ MEM_FILES =	ft_bzero.c ft_memset.c ft_memcpy.c ft_memmove.c ft_memchr.c ft_mallo
 
 IS_SMTH_FILES = ft_isalpha.c ft_isalnum.c ft_isprint.c ft_isascii.c ft_isdigit.c \
 
+STR_FILES =	ft_strlcpy.c ft_strlcat.c ft_strchr.c ft_strrchr.c ft_strlen.c ft_strdup.c \
+			ft_strnstr.c ft_strncmp.c ft_strjoin.c ft_substr.c ft_strtrim.c ft_strmapi.c \
+			ft_striteri.c \
+
+TO_SMTH_FILES = ft_tolower.c ft_toupper.c ft_atoi.c ft_itoa.c ft_atof.c ft_atol.c \
+
+PUT_FILES =	ft_putchar_fd.c ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c \
+
+LST_FILES =	ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c ft_lstadd_back.c \
+			ft_lstdelone.c ft_lstclear.c ft_lstiter.c ft_lstmap.c \
+
+GNL_FILES = ft_get_next_line.c ft_get_next_line_utils.c \
+
+MAT_FILES =	ft_split.c ft_matlen.c \
+
+PRINT_FILES =	ft_print_char.c ft_print_str.c ft_print_nbr.c ft_print_u_nbr.c ft_print_hex.c \
+				ft_print_ptr.c ft_printf.c \
+
 MEM_SRCS = $(addprefix $(MEM_DIR)/, $(MEM_FILES))
 
 IS_SMTH_SRCS = $(addprefix $(IS_SMTH_DIR)/, $(IS_SMTH_FILES))
 
-SRCS =	ft_strlcpy.c ft_strlcat.c \
-		ft_strchr.c ft_strrchr.c ft_tolower.c ft_toupper.c ft_strlen.c \
-		ft_strdup.c ft_strnstr.c ft_strncmp.c \
-		ft_atoi.c ft_strjoin.c ft_itoa.c ft_substr.c ft_strtrim.c \
-		ft_putchar_fd.c ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c \
-		ft_strmapi.c ft_striteri.c ft_split.c ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c \
-		ft_lstadd_back.c ft_lstdelone.c ft_lstclear.c ft_lstiter.c ft_lstmap.c \
-		ft_get_next_line.c ft_get_next_line_utils.c ft_get_next_line_bonus.c \
-		ft_print_char.c ft_print_str.c ft_print_nbr.c ft_print_u_nbr.c ft_print_hex.c \
-		ft_print_ptr.c ft_printf.c ft_atof.c ft_atol.c ft_matlen.c \
+STR_SRCS = $(addprefix $(STR_DIR)/, $(STR_FILES))
+
+TO_SMTH_SRCS = $(addprefix $(TO_SMTH_DIR)/, $(TO_SMTH_FILES))
+
+PUT_SRCS = $(addprefix $(PUT_DIR)/, $(PUT_FILES))
+
+LST_SRCS = $(addprefix $(LST_DIR)/, $(LST_FILES))
+
+GNL_SRCS = $(addprefix $(GNL_DIR)/, $(GNL_FILES))
+
+MAT_SRCS = $(addprefix $(MAT_DIR)/, $(MAT_FILES))
+
+PRINT_SRCS = $(addprefix $(PRINT_DIR)/, $(PRINT_FILES))
+
+SRCS_FILES =	$(MEM_SRCS) $(IS_SMTH_SRCS) $(STR_SRCS) $(TO_SMTH_SRCS) $(PUT_SRCS) \
+				$(LST_SRCS) $(GNL_SRCS) $(MAT_SRCS) $(PRINT_SRCS) \
+
+SRCS = $(addprefix $(SRCS_DIR)/, $(SRCS_FILES))
+
+O_SRCS = $(addprefix $(OBJ_DIR)/, $(SRCS_FILES:.c=.o))
  
 GREY            = \033[0;30m
 RED             = \033[0;31m
@@ -86,12 +112,16 @@ FUCHSIA         = \033[0;35m
 CYAN            = \033[0;36m
 NC              = \033[0m
 
-all: $(NAME)
+$(OBJ_DIR)/%.o : $(SRCS_DIR)/%.c $(INCLUDE)
+	mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(INCLUDE)
 
-$(NAME): dir
-	$(MAKE) -C $(SRCS_DIR)
-	mv -u $(DIR)/$(LIB) $(LIB_DIR)
-	clear
+all: $(NAME) dir check_library
+
+$(NAME): $(SRCS) $(O_SRCS)
+	$(ARCL) $(LIB) $(O_SRCS)
+	mkdir -p $(LIB_DIR)
+	mv -u $(LIB) $(LIB_DIR)
 
 dir:
 	if [ -d "$(SRCS_DIR)" ]; then \
@@ -99,41 +129,55 @@ dir:
 	else \
 		echo "$(RED)ERROR! Something went wrong in the compilation, please check if everything is corrected in $(BOLD_BLUE)$(SRCS_DIR)$(NC)"; \
 	fi
-	mkdir -p $(LIB_DIR)
+	@sleep 0.8
 
 check_library:
-	if [ "$(LIB_DIR)/$(LIB)" ]; then \
+	if [ -f "$(LIB_DIR)/$(LIB)" ]; then \
 		echo "$(BOLD_GREEN)$(LIB) $(GREEN)was created correctly!$(NC)"; \
 	else \
 		echo "$(RED)Something went wrong in the creation of $(BOLD_YELLOW)$(LIB)!$(NC)"; \
 	fi
+	@sleep 0.8 
+	@clear
 
-clean: check_clean wait
-	$(MAKE) -C $(DIR) clean
+clean: check_obj_existence
+	$(RMDIR) $(OBJ_DIR)
+	if [ -d "$(OBJ_DIR)" ]; then \
+		echo "$(RED)Something went wrong while cleaning!$(NC)"; \
+	else \
+		echo "$(GREEN)My man I fucking destroyed $(BOLD_BLUE)$(OBJ_DIR)$(GREEN), she deserved it.$(NC)"; \
+	fi
+	@sleep 1.5
 	clear
 
-check_clean:
-	if ls $(DIR)/*.o > /dev/null 2>&1;  then \
-		echo "$(GREEN)Everything was cleaned correctly!$(NC)"; \
-	else \
-		echo "$(RED)Something went wrong in clean!$(NC)"; \
+check_obj_existence:
+	if [ ! -d "$(OBJ_DIR)" ]; then \
+		echo "Bro... I got nothing to clean. My job here is done.$(NC)"; \
+		sleep 2; \
+		clear; \
+		exit 69; \
 	fi
 
-fclean: check_fclean wait
-	$(MAKE) -C $(DIR) fclean
+fclean: check_lib_existence
 	$(RMDIR) $(LIB_DIR)
-	#clear
-
-check_fclean:
-	if ls $(LIB_DIR)/$(LIB) > /dev/null 2>&1;  then \
-		echo "$(YELLOW)$(LIB) $(GREEN)and $(BLUE)$(LIB_DIR) $(GREEN)were removed correctly!$(NC)"; \
+	if [ -d "$(LIB_DIR)" ]; then \
+		echo "$(RED)Something went wrong while fcleaning!$(NC)"; \
 	else \
-		echo "$(RED)Something went wrong in fclean!$(NC)"; \
+		echo "$(GREEN)That $(BOLD_BLUE)$(LIB_DIR)$(GREEN) was shit$(NC)"; \
+	fi
+	@sleep 1.5 
+	clear
+
+check_lib_existence:
+	if [ ! -d "$(LIB_DIR)" ]; then \
+		echo "Before destroy something, you have to create it. Idiot."; \
+		sleep 2; \
+		clear; \
+		exit 69; \
 	fi
 
 re: fclean all
-	$(MAKE) -C $(DIR) re
-	#clear
+	clear
 
 push:
 	git add .
@@ -153,9 +197,6 @@ push:
 
 norm:
 	norminette *
-
-wait:
-	sleep 1
 
 .PHONY: all clean fclean re norm push wait
 .SILENT:
