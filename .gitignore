@@ -1,0 +1,6 @@
+pipex
+**/.vscode/
+**/*.o
+**/*.a
+**/obj/
+**/lib/
