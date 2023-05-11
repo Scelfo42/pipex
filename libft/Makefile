@@ -6,7 +6,7 @@
 #    By: cscelfo <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/10 12:09:22 by cscelfo           #+#    #+#              #
-#    Updated: 2023/05/10 16:29:42 by cscelfo          ###   ########.fr        #
+#    Updated: 2023/05/11 12:01:40 by cscelfo          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -163,7 +163,7 @@ fclean: check_lib_existence
 	if [ -d "$(LIB_DIR)" ]; then \
 		echo "$(RED)Something went wrong while fcleaning!$(NC)"; \
 	else \
-		echo "$(GREEN)That $(BOLD_BLUE)$(LIB_DIR)$(GREEN) was shit$(NC)"; \
+		echo "$(GREEN)That $(BOLD_YELLOW)$(LIB)$(GREEN) was shit$(NC)"; \
 	fi
 	@sleep 1.5 
 	clear

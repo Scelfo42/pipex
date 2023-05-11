@@ -6,18 +6,18 @@
 /*   By: cscelfo <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 12:17:19 by cscelfo           #+#    #+#             */
-/*   Updated: 2023/04/10 12:19:02 by cscelfo          ###   ########.fr       */
+/*   Updated: 2023/05/11 17:59:56 by cscelfo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../header/libft.h"
 
-int	ft_matlen(char **argv)
+int	ft_matlen(char **mat)
 {
 	int	i;
 
 	i = 0;
-	while (argv[i] != 0)
+	while (mat[i] != 0)
 		i++;
 	return (i);
 }

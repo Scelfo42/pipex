@@ -6,7 +6,7 @@
 /*   By: cscelfo <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/15 15:16:29 by cscelfo           #+#    #+#             */
-/*   Updated: 2022/11/14 21:05:04 by cscelfo          ###   ########.fr       */
+/*   Updated: 2023/05/11 17:35:23 by cscelfo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,7 @@ char	*ft_strjoin(char *s1, char *s2)
 
 	c = 0;
 	k = 0;
-	new = (char *)malloc(sizeof(char) * ft_strlen(s1) + ft_strlen(s2) + 1);
-	if (new == NULL)
-		return (NULL);
+	new = ft_calloc(ft_strlen(s1) + ft_strlen(s2) + 1, sizeof(char));
 	while (s1[c] != '\0')
 	{
 		new[c] = s1[c];
@@ -36,13 +34,3 @@ char	*ft_strjoin(char *s1, char *s2)
 	new[c + k] = '\0';
 	return (new);
 }
-/*
-#include <stdio.h>
-int	main()
-{
-	char	*s = "hey ";
-	char	*ss = "bob";
-	char	*sss = ft_strjoin(s, ss);
-	printf("%s\n", sss);
-	free(sss);
-}*/

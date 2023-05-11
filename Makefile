@@ -58,7 +58,7 @@ clean:
 	$(RM_DIR) $(OBJ_DIR)/
 	clear
 
-fclean:
+fclean: clean
 	$(MAKE) -C libft fclean
 	$(RM_DIR) $(NAME)
 	clear

@@ -6,7 +6,7 @@
 /*   By: cscelfo <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/10 14:44:25 by cscelfo           #+#    #+#             */
-/*   Updated: 2023/05/10 14:44:41 by cscelfo          ###   ########.fr       */
+/*   Updated: 2023/05/11 17:59:36 by cscelfo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ int			ft_printf(char *str, ...); //variadic function
 double		ft_atof(char *str); //atoi float
 long int	ft_atol(char *str); //atoi long
 /* STRLEN VARIATION */
-int			ft_matlen(char **argv); //matrix length
+int			ft_matlen(char **mat); //matrix length
 int			ft_countstr(char *s, char c); //for the split
 /* FREE VARIATION */
 void		*ft_free_void(void **ptr);

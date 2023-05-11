@@ -6,7 +6,7 @@
 /*   By: cscelfo <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 17:30:19 by cscelfo           #+#    #+#             */
-/*   Updated: 2023/05/01 15:18:55 by cscelfo          ###   ########.fr       */
+/*   Updated: 2023/05/11 15:49:13 by cscelfo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ char	**ft_split(char *s, char c)
 	if (!var.trim || !*var.trim)
 		return (NULL);
 	var.nb_str = ft_countstr(var.trim, c);
-	var.arr_p = (char **)ft_malloc(sizeof(char *) * (var.nb_str + 1));
+	var.arr_p = ft_calloc(var.nb_str + 1, sizeof(char *));
 	if (!var.arr_p)
 		return (NULL);
 	while (var.i < var.nb_str)
