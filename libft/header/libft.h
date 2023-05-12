@@ -42,6 +42,20 @@ typedef struct split_vars
 	char	**arr_p;
 }	t_var;
 
+typedef struct s_node
+{
+	int				data;
+	struct s_node	*next;
+	struct s_node	*prev;
+}	t_node;
+
+typedef struct s_stack
+{
+	int		size;
+	t_node	*top;
+	t_node	*bottom;
+}	t_stack;
+
 /*			LIBFT			*/
 /* STR */
 void		ft_striteri(char *s, void (*f)(unsigned int, char*));
@@ -97,9 +111,8 @@ char		**ft_split(char *s, char c);
 /*			GET_NEXT_LINE			*/
 /* GET IT */
 char		*get_next_line(int fd);
-char		*get_next_line_bonus(int fd);
 /* MANAGE STRINGS */
-char		*ft_cpy(char *dest, char *tmp, char *source, size_t start);
+char		*ft_gnl_cpy(char *dest, char *tmp, char *source, size_t start);
 char		*join_buf_to_heap(char *dst, char *src, ssize_t byte, size_t q_mem);
 char		*form_static(char *str);
 char		*cut_to_line(char *str_to_cut, char *buf);
@@ -124,10 +137,17 @@ long int	ft_atol(char *str); //atoi long
 int			ft_matlen(char **mat); //matrix length
 int			ft_countstr(char *s, char c); //for the split
 /* FREE VARIATION */
-void		*ft_free_void(void **ptr);
+void		*ft_free(void **ptr);
 void		**ft_free_mat(char ***ptr_mat);
-void		*ft_malloc(size_t size);
+void		ft_free_stack(t_stack **stack);
+void		ft_free_argv(char **argv);
 /* STRCPY VARIATION */
 int			*ft_arrcpy(int *arr, int size);
+int			*ft_stack_to_arr(t_node *stack_top, int stack_size);
+/* FIND IN STACK */
+int			ft_smallest(t_node *top);
+int			ft_biggest(t_node *top);
+/* DEBUGGING MEMORY */
+void		*ft_malloc(size_t size);
 
 #endif

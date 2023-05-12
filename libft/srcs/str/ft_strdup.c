@@ -20,12 +20,12 @@ char	*ft_strdup(char *s)
 	if (!s)
 		return (NULL);
 	s_len = ft_strlen(s) + 1;
-	new_s = (char *)ft_malloc(sizeof(char) * s_len);
+	new_s = ft_calloc(s_len, sizeof(char));
 	if (!new_s)
 		return (NULL);
 	ft_memcpy(new_s, s, s_len);
 	if (!*new_s)
-		ft_free_void((void **)&new_s);
+		ft_free((void **)&new_s);
 	return (new_s);
 }
 /*

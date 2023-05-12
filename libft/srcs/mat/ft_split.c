@@ -16,11 +16,10 @@ static char	*ft_char_to_str(char c)
 {
 	char	*str;
 
-	str = (char *)malloc(sizeof(char) * 2);
+	str = ft_calloc(2, sizeof(char));
 	if (!str)
 		return (0);
 	str[0] = c;
-	str[1] = '\0';
 	return (str);
 }
 
@@ -69,7 +68,7 @@ char	**ft_split(char *s, char c)
 		}
 	}
 	var.arr_p[var.i] = 0;
-	free(var.trim);
+	ft_free((void **)&var.trim);
 	return (var.arr_p);
 }
 /*

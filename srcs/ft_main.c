@@ -6,7 +6,7 @@
 /*   By: cscelfo <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/10 17:15:20 by cscelfo           #+#    #+#             */
-/*   Updated: 2023/05/11 18:43:40 by cscelfo          ###   ########.fr       */
+/*   Updated: 2023/05/12 15:40:21 by cscelfo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,14 @@ char	**ft_getpath_add_slash(char **envp)
 {
 	char	**path;
 	char	**tmp;
+	char	*str;
 	int		i;
 
-	tmp = ft_split(&(envp[34][28]), ':');
+	str = "PATH=/";
+	i = 0;
+	while (ft_strncmp(str, envp[i], 6))
+		i++;
+	tmp = ft_split(&(envp[i][28]), ':');
 	path = ft_calloc(ft_matlen(tmp) + 1, sizeof(char *));
 	i = -1;
 	while (tmp[++i])
@@ -32,28 +37,55 @@ char	**ft_getpath_add_slash(char **envp)
 
 bool	ft_test_validity(t_data *data, char *cmd_to_try)
 {
-	char	**test_cmd_no_flag;
+	char	**cmd_no_flag;
 	int		i;
 	char	*cmd_path;
 
-	test_cmd_no_flag = ft_split(cmd_to_try, ' ');
-	if (!test_cmd_no_flag)
+	cmd_no_flag = ft_split(cmd_to_try, ' ');
+	if (!cmd_no_flag)
 		return (false);
 	i = -1;
 	while (data->env[++i])
 	{
-		cmd_path = ft_strjoin(data->env[i], test_cmd_no_flag[0]);
-		if (access(cmd_path, F_OK | X_OK))
+		cmd_path = ft_strjoin(data->env[i], cmd_no_flag[0]);
+		if (access(cmd_path, F_OK | X_OK) == 0)
 		{
 			if (data->cmd[0])
-				data->cmd[1] = cmd_to_try;
+				data->cmd[1] = cmd_path;
 			else
-				data->cmd[0] = cmd_to_try;
+				data->cmd[0] = cmd_path;
+			ft_free_argv(cmd_no_flag);
+			ft_free((void *)&cmd_path);
 			return (true);
 		}
-		free(cmd_path);
+		ft_free((void *)&cmd_path);
 	}
 	return (false);
+}
+
+void	ft_exec_cmd(t_data *data)
+{
+	int	pipe_fd[2];
+
+	if (pipe(pipe_fd) == -1)
+	{
+		perror("pipe: ");
+		exit(1);
+	}
+	data->pid = fork();
+	if (data->pid < 0)
+	{
+		perror("pid: ");
+		exit(2);
+	}
+	if (data->pid == 0)
+	{
+		dup2(pipe_fd[1], STDOUT_FILENO);
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
+		//execve(data->cmd[0], ft_split(data->cmd[0], ' '), data->env);
+	}
+	//waitpid(data->pid, NULL, 0);
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -76,31 +108,14 @@ int	main(int argc, char **argv, char **envp)
 		ft_printf("An error of command validity has occured\n");
 		return (3);
 	}
-	else
-	{
-		ft_printf("\nCONGRATULATIONS! '%s' and '%s' are both valid commands\n\n", data->cmd[0], data->cmd[1]);
-	}
-/*
-	while (cmd[++i])
-	{
-		j = 0;
-		while (envp[j])
-		{
-			access_return = access(envp[j], F_OK);
-			if (access_return == 0)
-			{
-				ft_printf("\ncommand '%s' is valid\n\n", cmd[i]);
-				break ;
-			}
-			ft_printf("\naccess: %d\n\n", access_return);
-			ft_printf("\nenvp[%d]: '%s'\n\n", j, envp[j]);
-			j++;
-		}
-	}*/
-/*	while (envp[++i])
-		ft_printf("envp[%d]: [%s]\n", i, envp[i]);*/
+	ft_exec_cmd(data);
+	ft_free_world(data);
 	return (0);
 }
+/*	else
+	{
+		ft_printf("\nCONGRATULATIONS! '%s' and '%s' are both valid commands\n\n", data->cmd[0], data->cmd[1]);
+	}*/
 /*
 {
 	int	fd[2];

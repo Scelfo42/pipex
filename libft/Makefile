@@ -6,7 +6,7 @@
 #    By: cscelfo <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/10 12:09:22 by cscelfo           #+#    #+#              #
-#    Updated: 2023/05/11 12:01:40 by cscelfo          ###   ########.fr        #
+#    Updated: 2023/05/12 16:00:38 by cscelfo          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -54,6 +54,8 @@ MAT_DIR = mat
 
 PRINT_DIR = print
 
+ARR_DIR = arr
+
 MEM_FILES =	ft_bzero.c ft_memset.c ft_memcpy.c ft_memmove.c ft_memchr.c ft_malloc.c \
 			ft_calloc.c ft_memcmp.c ft_free.c \
 
@@ -63,12 +65,14 @@ STR_FILES =	ft_strlcpy.c ft_strlcat.c ft_strchr.c ft_strrchr.c ft_strlen.c ft_st
 			ft_strnstr.c ft_strncmp.c ft_strjoin.c ft_substr.c ft_strtrim.c ft_strmapi.c \
 			ft_striteri.c \
 
-TO_SMTH_FILES = ft_tolower.c ft_toupper.c ft_atoi.c ft_itoa.c ft_atof.c ft_atol.c \
+TO_SMTH_FILES = ft_tolower.c ft_toupper.c ft_atoi.c ft_itoa.c ft_atof.c ft_atol.c ft_stack_to_arr.c \
 
 PUT_FILES =	ft_putchar_fd.c ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c \
 
 LST_FILES =	ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c ft_lstadd_back.c \
-			ft_lstdelone.c ft_lstclear.c ft_lstiter.c ft_lstmap.c \
+			ft_lstdelone.c ft_lstclear.c ft_lstiter.c ft_lstmap.c ft_init_node.c \
+			ft_last_node.c ft_add_node_before.c ft_add_node_after.c ft_smallest_node.c \
+			ft_biggest_node.c \
 
 GNL_FILES = ft_get_next_line.c ft_get_next_line_utils.c \
 
@@ -76,6 +80,8 @@ MAT_FILES =	ft_split.c ft_matlen.c \
 
 PRINT_FILES =	ft_print_char.c ft_print_str.c ft_print_nbr.c ft_print_u_nbr.c ft_print_hex.c \
 				ft_print_ptr.c ft_printf.c \
+
+ARR_FILES =	ft_arrcpy.c \
 
 MEM_SRCS = $(addprefix $(MEM_DIR)/, $(MEM_FILES))
 
@@ -95,8 +101,10 @@ MAT_SRCS = $(addprefix $(MAT_DIR)/, $(MAT_FILES))
 
 PRINT_SRCS = $(addprefix $(PRINT_DIR)/, $(PRINT_FILES))
 
+ARR_SRCS = $(addprefix $(ARR_DIR)/, $(ARR_FILES))
+
 SRCS_FILES =	$(MEM_SRCS) $(IS_SMTH_SRCS) $(STR_SRCS) $(TO_SMTH_SRCS) $(PUT_SRCS) \
-				$(LST_SRCS) $(GNL_SRCS) $(MAT_SRCS) $(PRINT_SRCS) \
+				$(LST_SRCS) $(GNL_SRCS) $(MAT_SRCS) $(PRINT_SRCS) $(ARR_SRCS) \
 
 SRCS = $(addprefix $(SRCS_DIR)/, $(SRCS_FILES))
 
