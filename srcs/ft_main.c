@@ -51,9 +51,9 @@ bool	ft_test_validity(t_data *data, char *cmd_to_try)
 		if (access(cmd_path, F_OK | X_OK) == 0)
 		{
 			if (data->cmd[0])
-				data->cmd[1] = cmd_path;
+				data->cmd[1] = ft_strdup(cmd_path);
 			else
-				data->cmd[0] = cmd_path;
+				data->cmd[0] = ft_strdup(cmd_path);
 			ft_free_argv(cmd_no_flag);
 			ft_free((void *)&cmd_path);
 			return (true);
@@ -63,7 +63,7 @@ bool	ft_test_validity(t_data *data, char *cmd_to_try)
 	return (false);
 }
 
-void	ft_exec_cmd(t_data *data)
+void	ft_exec_cmd(t_data *data, char **argv)
 {
 	int	pipe_fd[2];
 
@@ -72,6 +72,7 @@ void	ft_exec_cmd(t_data *data)
 		perror("pipe: ");
 		exit(1);
 	}
+
 	data->pid = fork();
 	if (data->pid < 0)
 	{
@@ -82,10 +83,21 @@ void	ft_exec_cmd(t_data *data)
 	{
 		dup2(pipe_fd[1], STDOUT_FILENO);
 		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-		//execve(data->cmd[0], ft_split(data->cmd[0], ' '), data->env);
+		// close(pipe_fd[1]);
+		ft_printf("pipe\n");
+		exit(0);
 	}
-	//waitpid(data->pid, NULL, 0);
+	int file2 = open(data->file2, O_CREAT | O_TRUNC | O_WRONLY, 0644);	
+	waitpid(data->pid, NULL, 0);
+	dup2(file2, STDOUT_FILENO);
+	dup2(pipe_fd[0], STDIN_FILENO);
+	// char **bob = ft_split(argv[3], ' ');
+	// for (int i = 0; i < 2; i++)
+	// {
+		// ft_printf("bob[%d]: '%s'", i, bob[i]);
+	// }
+	execve(data->cmd[1], ft_split(argv[3], ' '),data->env);
+// ft_printf("\nI am parent\n\n");
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -108,7 +120,9 @@ int	main(int argc, char **argv, char **envp)
 		ft_printf("An error of command validity has occured\n");
 		return (3);
 	}
-	ft_exec_cmd(data);
+	ft_printf("\ndata->cmd[0]: '%s'\n", data->cmd[0]);
+	ft_printf("\ndata->cmd[1]: '%s'\n\n", data->cmd[1]);
+	ft_exec_cmd(data, argv);
 	ft_free_world(data);
 	return (0);
 }

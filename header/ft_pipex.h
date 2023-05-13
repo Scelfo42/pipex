@@ -27,6 +27,8 @@ typedef struct s_data
 	char	**env;
 //	int		pipe_fd[2];
 	int		pid;
+	char	*file1;
+	char	*file2;
 }	t_data;
 
 void	ft_free_world(t_data *data);
