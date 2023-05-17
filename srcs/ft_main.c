@@ -60,12 +60,13 @@ bool	ft_test_validity(t_data *data, char *cmd_to_try)
 		}
 		ft_free((void *)&cmd_path);
 	}
+	ft_free_argv(cmd_no_flag);
 	return (false);
 }
 
 void	ft_exec_cmd(t_data *data, char **argv)
 {
-	int	pipe_fd[2];
+	int	pipe_fd[2]; // pipe_fd[0] = read | pipe_fd[1] = write //
 
 	if (pipe(pipe_fd) == -1)
 	{
@@ -81,23 +82,33 @@ void	ft_exec_cmd(t_data *data, char **argv)
 	}
 	if (data->pid == 0)
 	{
-		dup2(pipe_fd[1], STDOUT_FILENO);
-		close(pipe_fd[0]);
-		// close(pipe_fd[1]);
-		ft_printf("pipe\n");
+		close(pipe_fd[0]); //nothing to be read
+		int file1 = open(data->file1, O_RDONLY);
+		if (file1 == -1)
+		{
+			ft_printf("%s not found\n", data->file1);
+			exit(1);
+		}
+		dup2(file1, STDIN_FILENO);
+		dup2(pipe_fd[1], STDOUT_FILENO); //scrivo nello standard output dal pipe[1] cosi' da poter leggerlo dal pipe[0] nel parent dallo standard input
+		close(pipe_fd[1]);
+		execve(data->cmd[0], ft_split(argv[2], ' '), data->env);
 		exit(0);
 	}
-	int file2 = open(data->file2, O_CREAT | O_TRUNC | O_WRONLY, 0644);	
+	close(pipe_fd[1]); //nothing to be written
+	int file2 = open(data->file2, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	if (file2 == -1)
+	{
+		ft_printf("An error occured in the creation of %s\n", data->file2);
+		exit(1);
+	}
 	waitpid(data->pid, NULL, 0);
 	dup2(file2, STDOUT_FILENO);
 	dup2(pipe_fd[0], STDIN_FILENO);
-	// char **bob = ft_split(argv[3], ' ');
-	// for (int i = 0; i < 2; i++)
-	// {
-		// ft_printf("bob[%d]: '%s'", i, bob[i]);
-	// }
-	execve(data->cmd[1], ft_split(argv[3], ' '),data->env);
-// ft_printf("\nI am parent\n\n");
+	close(pipe_fd[1]);
+	execve(data->cmd[1], ft_split(argv[3], ' '), data->env);
+	close(pipe_fd[0]);
+	return;
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -117,50 +128,13 @@ int	main(int argc, char **argv, char **envp)
 	if ((!ft_test_validity(data, argv[2])) 
 		|| (!ft_test_validity(data, argv[3])))
 	{
-		ft_printf("An error of command validity has occured\n");
+		ft_free_world(data);
+		ft_printf("BOBBEI command not found\n");
 		return (3);
 	}
-	ft_printf("\ndata->cmd[0]: '%s'\n", data->cmd[0]);
-	ft_printf("\ndata->cmd[1]: '%s'\n\n", data->cmd[1]);
+	data->file1 = argv[1];
+	data->file2 = argv[4];
 	ft_exec_cmd(data, argv);
 	ft_free_world(data);
 	return (0);
 }
-/*	else
-	{
-		ft_printf("\nCONGRATULATIONS! '%s' and '%s' are both valid commands\n\n", data->cmd[0], data->cmd[1]);
-	}*/
-/*
-{
-	int	fd[2];
-	int	childpid;
-	char **av;
-	
-	av = ft_calloc(10, sizeof(char *));
-	pipe(fd);
-	childpid = fork();
-	if (childpid == 0)
-	{
-		av[0] = "/bin/echo";
-		av[1] = ft_strjoin(argv[1], argv[2]);
-		av[2] = NULL;
-		close(fd[0]); //closed unused read end
-		dup2(fd[1], 1); //closed stdout and redirecting it into write end
-		close(fd[1]); //closed original write end cause it's duplicated now
-		if (execve(av[0], av, NULL) == -1)
-			perror("execve e' na mmerda");
-		exit(0);
-	}
-	//parent process takes echo's output and pass it to tr's input
-	av[0] = "/usr/bin/tr";
-	av[1] = "-d";
-	av[2] = "_";
-	av[3] = NULL;
-	close(fd[1]); //closed unused write end
-	dup2(fd[0], 0); //closed stdin and redirecting it into read end
-	close(fd[0]); //closed original read end cause it's duplicated now
-	if (execve(av[0], av, NULL) == -1)
-		perror("execve e' na mmerda");
-	(void)argc;
-	return (0);
-}*/
