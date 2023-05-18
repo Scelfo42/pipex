@@ -28,7 +28,7 @@ LIB_DIR = lib
 
 LIB = libft.a
 
-SRCS_FILES = ft_main.c ft_handle_leaks.c \
+SRCS_FILES = ft_main.c ft_handle_leaks.c ft_check_errors.c \
 
 SRCS = $(addprefix $(SRCS_DIR)/, $(SRCS_FILES))
 

@@ -4,3 +4,4 @@ pipex
 **/*.a
 **/obj/
 **/lib/
+**/pipex-tester/

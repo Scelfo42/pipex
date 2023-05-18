@@ -6,7 +6,7 @@
 /*   By: cscelfo <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/01 15:17:48 by cscelfo           #+#    #+#             */
-/*   Updated: 2023/05/01 15:21:01 by cscelfo          ###   ########.fr       */
+/*   Updated: 2023/05/18 18:17:54 by cscelfo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,6 @@ void	*ft_free(void **ptr)
 		*ptr = 0;
 	}
 	return (*ptr);
-}
-
-void	**ft_free_mat(char ***ptr_mat)
-{
-	if (*ptr_mat)
-	{
-		if (**ptr_mat)
-			ft_free((void **)*ptr_mat);
-		*ptr_mat = 0;
-	}
-	return ((void **)*ptr_mat);
 }
 
 void	ft_free_stack(t_stack **stack)
@@ -48,12 +37,13 @@ void	ft_free_stack(t_stack **stack)
 	free(*stack);
 }
 
-void	ft_free_argv(char **argv)
+void	ft_free_matrix(char **matrix)
 {
 	int	i;
 
-	i = 0;
-	while (argv[i])
-		free(argv[i++]);
-	free(argv);
+	i = -1;
+	while (matrix[++i])
+		ft_free((void **)&matrix[i]);
+	free(matrix);
+	matrix = NULL;
 }

@@ -6,7 +6,7 @@
 /*   By: cscelfo <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/10 17:15:52 by cscelfo           #+#    #+#             */
-/*   Updated: 2023/05/12 15:40:10 by cscelfo          ###   ########.fr       */
+/*   Updated: 2023/05/18 18:14:27 by cscelfo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,17 @@ typedef struct s_data
 {
 	char	**cmd;
 	char	**env;
-//	int		pipe_fd[2];
-	int		pid;
+	char	**cmd_no_flag_one;
+	char	**cmd_no_flag_two;
 	char	*file1;
 	char	*file2;
 }	t_data;
 
+/*	TEST_CMD	*/
+bool	ft_test_validity(char *cmd, char **env);
+/*	HANDLE ERRORS	*/
+void	ft_check_errors(t_data *data, char **argv);
+/*	HANDLE LEAKS	*/
 void	ft_free_world(t_data *data);
 
 #endif

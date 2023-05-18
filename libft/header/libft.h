@@ -6,7 +6,7 @@
 /*   By: cscelfo <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/10 14:44:25 by cscelfo           #+#    #+#             */
-/*   Updated: 2023/05/11 17:59:36 by cscelfo          ###   ########.fr       */
+/*   Updated: 2023/05/18 17:51:15 by cscelfo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,9 +138,8 @@ int			ft_matlen(char **mat); //matrix length
 int			ft_countstr(char *s, char c); //for the split
 /* FREE VARIATION */
 void		*ft_free(void **ptr);
-void		**ft_free_mat(char ***ptr_mat);
 void		ft_free_stack(t_stack **stack);
-void		ft_free_argv(char **argv);
+void		ft_free_matrix(char **matrix);
 /* STRCPY VARIATION */
 int			*ft_arrcpy(int *arr, int size);
 int			*ft_stack_to_arr(t_node *stack_top, int stack_size);
