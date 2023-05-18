@@ -78,7 +78,7 @@ push:
 	else \
 		git commit -m "$(shell date +'%H:%M %d-%h') update"; \
 	fi
-	@echo "$(YELLOW)Committing...and..."
+	@echo "$(YELLOW)Committing... and..."
 	git push
 	@echo "$(GREEN)PUSHA KEKKO!$(NC)"
 
