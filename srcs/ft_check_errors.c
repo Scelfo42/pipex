@@ -12,7 +12,7 @@
 
 #include "../header/ft_pipex.h"
 
-bool	ft_test_validity(char *cmd, char **env)
+bool	ft_test_validity(t_data *data, char *cmd)
 {
 	int		i;
 	char	*cmd_path;
@@ -21,12 +21,16 @@ bool	ft_test_validity(char *cmd, char **env)
 	if (!cmd || !cmd[0])
 		return (false);
 	i = -1;
-	while (env[++i])
+	while (data->env[++i])
 	{
-		join_slash = ft_strjoin(env[i], "/");
+		join_slash = ft_strjoin(data->env[i], "/");
 		cmd_path = ft_strjoin(join_slash, cmd);
 		if (access(cmd_path, F_OK | X_OK) == 0)
 		{
+			if (!data->cmd[0])
+				data->cmd[0] = ft_strdup(cmd_path);
+			else
+				data->cmd[1] = ft_strdup(cmd_path);
 			ft_free((void **)&join_slash);
 			ft_free((void **)&cmd_path);
 			return (true);
@@ -47,8 +51,8 @@ void	ft_check_errors(t_data *data, char **argv)
 	}
 	data->cmd_no_flag_one = ft_split(argv[2], ' ');
 	data->cmd_no_flag_two = ft_split(argv[3], ' ');
-	if (!ft_test_validity(data->cmd_no_flag_one[0], data->env)
-		|| !ft_test_validity(data->cmd_no_flag_two[0], data->env))
+	if (!ft_test_validity(data, data->cmd_no_flag_one[0])
+		|| !ft_test_validity(data, data->cmd_no_flag_two[0]))
 	{
 		ft_free_world(data);
 		ft_putstr_fd("Command not found\n", 2);

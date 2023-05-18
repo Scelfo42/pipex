@@ -12,7 +12,7 @@
 
 #include "../header/ft_pipex.h"
 
-char	**ft_getpath_add_slash(char **envp, char *correct_line)
+char	**ft_getpath(char **envp, char *correct_line)
 {
 	char	**path;
 	int		i;
@@ -49,6 +49,7 @@ void	ft_exec_cmd(t_data *data)
 	}
 	if (pid == 0)
 	{
+		//ft_child_process();
 		close(pipe_fd[0]); //nothing to be read
 		int file1 = open(data->file1, O_RDONLY);
 		if (file1 == -1)
@@ -61,15 +62,12 @@ void	ft_exec_cmd(t_data *data)
 	}
 	close(pipe_fd[1]); //nothing to be written
 	waitpid(pid, NULL, 0);
+	//ft_parent_process();
 	int file2 = open(data->file2, O_CREAT | O_TRUNC | O_WRONLY, 0644);
 	if (file2 == -1)
-	{
-		ft_printf("An error occured in the creation of %s\n", data->file2);
-		exit(4);
-	}
+		exit(-1);
 	dup2(file2, STDOUT_FILENO);
 	dup2(pipe_fd[0], STDIN_FILENO);
-	close(pipe_fd[1]);
 	execve(data->cmd[1], data->cmd_no_flag_two, data->env);
 	close(pipe_fd[0]);
 }
@@ -84,7 +82,7 @@ int	main(int argc, char **argv, char **envp)
 		return (0);
 	}
 	data = ft_calloc(1, sizeof(t_data));
-	data->env = ft_getpath_add_slash(envp, "PATH=");
+	data->env = ft_getpath(envp, "PATH=");
 	data->cmd = ft_calloc(2, sizeof(char *));
 	ft_check_errors(data, argv);
 	ft_exec_cmd(data);

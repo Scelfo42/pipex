@@ -32,7 +32,7 @@ typedef struct s_data
 }	t_data;
 
 /*	TEST_CMD	*/
-bool	ft_test_validity(char *cmd, char **env);
+bool	ft_test_validity(t_data *data, char *cmd);
 /*	HANDLE ERRORS	*/
 void	ft_check_errors(t_data *data, char **argv);
 /*	HANDLE LEAKS	*/
