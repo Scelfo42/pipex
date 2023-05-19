@@ -23,18 +23,13 @@
 
 typedef struct s_data
 {
-	char	**cmd;
-	char	**env;
-	char	**cmd_no_flag_one;
-	char	**cmd_no_flag_two;
+	char	**cmd1;
+	char	**cmd2;
+	char	**envp;
 	char	*file1;
 	char	*file2;
 }	t_data;
 
-/*	TEST_CMD	*/
-bool	ft_test_validity(t_data *data, char *cmd);
-/*	HANDLE ERRORS	*/
-void	ft_check_errors(t_data *data, char **argv);
 /*	HANDLE LEAKS	*/
 void	ft_free_world(t_data *data);
 

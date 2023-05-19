@@ -14,8 +14,6 @@
 
 void	ft_free_world(t_data *data)
 {
-	if (data->env)
-		ft_free_matrix(data->env);
 	if (data->cmd)
 		ft_free_matrix(data->cmd);
 	if (data->cmd_no_flag_one)

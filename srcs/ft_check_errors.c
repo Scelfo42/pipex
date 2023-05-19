@@ -12,54 +12,69 @@
 
 #include "../header/ft_pipex.h"
 
-bool	ft_test_validity(t_data *data, char *cmd)
+char	**ft_getpath(char **envp, char *correct_line)
 {
+	char	**path;
 	int		i;
-	char	*cmd_path;
-	char	*join_slash;
+	int		path_len;
 
-	if (!cmd || !cmd[0])
-		return (false);
 	i = -1;
-	while (data->env[++i])
+	path_len = ft_strlen(correct_line);
+	while (envp[++i])
 	{
-		join_slash = ft_strjoin(data->env[i], "/");
-		cmd_path = ft_strjoin(join_slash, cmd);
-		if (access(cmd_path, F_OK | X_OK) == 0)
-		{
-			if (!data->cmd[0])
-				data->cmd[0] = ft_strdup(cmd_path);
-			else
-				data->cmd[1] = ft_strdup(cmd_path);
-			ft_free((void **)&join_slash);
-			ft_free((void **)&cmd_path);
-			return (true);
-		}
-		ft_free((void **)&join_slash);
-		ft_free((void *)&cmd_path);
+		if (!ft_strncmp(envp[i], correct_line, path_len))
+			break ;
+		continue;
 	}
-	return (false);
+	path = ft_split(&(envp[i][path_len + 1]), ':');
+	return (path);
 }
 
-void	ft_check_errors(t_data *data, char **argv)
+char	*ft_join_cmd(char **envp, char *cmd)
 {
-	if (!data->env)
+	int		i;
+	char	*executable;
+	char	*add_slash;
+
+	i = -1;
+	while (envp[i])
 	{
-		ft_free_world(data);
-		ft_putstr_fd("Environment path not found correctly\n", 2);
-		exit(-1);
+		add_slash = ft_strjoin(envp[i], "/");
+		executable = ft_strjoin(add_slash, cmd);
+		if (access(executable, X_OK) == -1)
+			break ;
+		ft_free(&add_slash);
+		ft_free(&executable);
 	}
-	data->cmd_no_flag_one = ft_split(argv[2], ' ');
-	data->cmd_no_flag_two = ft_split(argv[3], ' ');
-	if (!ft_test_validity(data, data->cmd_no_flag_one[0])
-		|| !ft_test_validity(data, data->cmd_no_flag_two[0]))
+	ft_free(&add_slash);
+	return (executable);
+}
+
+char	**ft_take_cmd(t_data *data, char *cmd_wFlag)
+{
+	char	**cmd_mat;
+	char	**env;
+	char	*cmd;
+
+	cmd_mat = ft_split(cmd_wFlag, ' ');	
+	cmd = ft_join_cmd(data->envp, cmd_mat[0]);
+	if (cmd)
 	{
-		ft_free_world(data);
-		ft_putstr_fd("Command not found\n", 2);
-		exit(-1);
+		ft_free(&cmd_mat[0]);
+		cmd_mat[0] = cmd;
 	}
-	else if (access(argv[1], F_OK) == -1)
-		ft_putstr_fd("No such file or directory\n", 2);
+	return (cmd_mat);
+}
+
+int	ft_set_variables(t_data *data, char **argv, int argc, char **envp)
+{
+	int	recursion;
+
+	recursion = 3;
+	while (argc-- > 5)
+		recursion++;
 	data->file1 = argv[1];
 	data->file2 = argv[4];
+	data->envp = ft_getpath(envp, "PATH=");
+	return (recursion);	
 }
