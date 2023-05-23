@@ -31,6 +31,5 @@ typedef struct s_data
 }	t_data;
 
 /*	HANDLE LEAKS	*/
-void	ft_free_world(t_data *data);
 
 #endif
