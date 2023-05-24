@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_main.c                                          :+:      :+:    :+:   */
+/*   ft_pipex.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cscelfo <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/10 17:15:20 by cscelfo           #+#    #+#             */
-/*   Updated: 2023/05/18 18:06:56 by cscelfo          ###   ########.fr       */
+/*   Updated: 2023/05/24 18:30:51 by cscelfo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,16 +82,22 @@ int	ft_children(char **cmd, int fd_in, int fd_out, char **envp)
 	{
 		dup2(fd_in, STDIN_FILENO);
 		dup2(fd_out, STDOUT_FILENO);
-		execve(cmd[0], cmd, envp);
-		perror("Command: ");
 		close(fd_in);
 		close(fd_out);
-		exit(127);
+		if (execve(cmd[0], cmd, envp) == -1)
+		{
+			ft_putstr_fd("Command not found\n", 2);
+			close(fd_in);
+			close(fd_out);
+			ft_free_matrix(cmd);
+			exit(127);
+		}
 	}
 	close(fd_in);
 	close(fd_out);
 	waitpid(pid, &status, 0);
 	exittino = WEXITSTATUS(status);
+	ft_free_matrix(cmd);
 	return (exittino);
 }
 
@@ -109,11 +115,16 @@ int	ft_exec(int ac, char **av, char **envp, int fd_file2)
 		ft_exec((ac - 1), av, envp, pipe_fd[1]);
 	else
 	{
+		pipe_fd[1] = -1;
 		pipe_fd[0] = open(av[ac - 1], O_RDONLY);
 		if (pipe_fd[0] == -1)
-			exit(EXIT_FAILURE);
-		pipe_fd[1] = -1;
+		{
+			ft_putstr_fd("infile: no such file or directory\n", 2);
+			return (1);
+		}
 	}
+	if (pipe_fd[1] != -1)
+		close(pipe_fd[1]);
 	cmd = ft_get_cmd(av[ac], envp);
 	return (ft_children(cmd, pipe_fd[0], fd_file2, envp));
 }
@@ -129,8 +140,9 @@ int	main(int ac, char **av, char **envp)
 		return (EXIT_FAILURE);
 	}
 	fd_file2 = open(av[--ac], O_CREAT | O_TRUNC | O_WRONLY, 0644); //file2 has to be opened no matter what
-	if (fd_file2 == 1)
+	if (fd_file2 == -1)
 		return (EXIT_FAILURE);
 	child_status = ft_exec(--ac, av, envp, fd_file2);
+	close(fd_file2);
 	return (child_status); //here the exit status of the child process will be returned
 }
