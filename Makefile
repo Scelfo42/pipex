@@ -28,7 +28,7 @@ LIB_DIR = lib
 
 LIB = libft.a
 
-SRCS_FILES = ft_pipex.c \
+SRCS_FILES = ft_pipex.c ft_cmd_utils.c \
 
 SRCS = $(addprefix $(SRCS_DIR)/, $(SRCS_FILES))
 

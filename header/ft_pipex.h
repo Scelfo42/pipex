@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_pipex.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cscelfo <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: chri42 <chri42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/10 17:15:52 by cscelfo           #+#    #+#             */
-/*   Updated: 2023/05/18 18:14:27 by cscelfo          ###   ########.fr       */
+/*   Updated: 2023/05/24 21:31:09 by chri42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 # include <sys/stat.h>
 # include <signal.h>
 
-
 typedef struct s_data
 {
 	char	**cmd1;
@@ -32,6 +31,8 @@ typedef struct s_data
 	char	*file2;
 }	t_data;
 
-/*	HANDLE LEAKS	*/
+char	*ft_cmd_path(char *cmd, char **env);
+char	**ft_get_cmd(char *cmd, char **envp);
+char	**ft_get_env(char *line, char **envp);
 
 #endif

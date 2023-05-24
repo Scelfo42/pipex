@@ -113,9 +113,9 @@ O_SRCS = $(addprefix $(OBJ_DIR)/, $(SRCS_FILES:.c=.o))
 GREY            = \033[0;30m
 RED             = \033[0;31m
 GREEN           = \033[0;32m
-BOLD_GREEN		= \033[1;32m
-BOLD_YELLOW		= \033[1;33m
-BOLD_BLUE		= \033[1;34m
+BOLD_GREEN	= \033[1;32m
+BOLD_YELLOW	= \033[1;33m
+BOLD_BLUE	= \033[1;34m
 FUCHSIA         = \033[0;35m
 CYAN            = \033[0;36m
 NC              = \033[0m
@@ -137,7 +137,7 @@ dir:
 	else \
 		echo "$(RED)ERROR! Something went wrong in the compilation, please check if everything is corrected in $(BOLD_BLUE)$(SRCS_DIR)$(NC)"; \
 	fi
-	@sleep 0.8
+	@sleep 0.6
 
 check_library:
 	if [ -f "$(LIB_DIR)/$(LIB)" ]; then \
@@ -145,7 +145,7 @@ check_library:
 	else \
 		echo "$(RED)Something went wrong in the creation of $(BOLD_YELLOW)$(LIB)!$(NC)"; \
 	fi
-	@sleep 0.8 
+	@sleep 0.6 
 	@clear
 
 clean: check_obj_existence
@@ -155,7 +155,7 @@ clean: check_obj_existence
 	else \
 		echo "$(GREEN)My man I fucking destroyed $(BOLD_BLUE)$(OBJ_DIR)$(GREEN), she deserved it.$(NC)"; \
 	fi
-	@sleep 1.5
+	@sleep 0.5
 	clear
 
 check_obj_existence:

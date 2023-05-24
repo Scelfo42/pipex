@@ -3,75 +3,43 @@
 /*                                                        :::      ::::::::   */
 /*   ft_pipex.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cscelfo <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: chri42 <chri42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/10 17:15:20 by cscelfo           #+#    #+#             */
-/*   Updated: 2023/05/24 18:30:51 by cscelfo          ###   ########.fr       */
+/*   Updated: 2023/05/24 22:20:20 by chri42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../header/ft_pipex.h"
 
-char	**ft_get_env(char *line, char **envp)
+void	ft_error_message(void)
 {
-	char	**get_path;
-	int		i;
-	size_t	path_len;
-
-	i = -1;
-	path_len = ft_strlen(line);
-	while (envp[++i])
-	{
-		if (!ft_strncmp(line, envp[i], path_len))
-			break ;
-		continue;
-	}
-	get_path = ft_split(&(envp[i][path_len + 1]), ':');
-	return (get_path);
+	ft_putstr_fd("\nNot enough arguments given!\n\n", 2);
+	ft_putstr_fd("-------------------------------------------------\n", 2);
+	ft_putstr_fd("|\t\t\t\t\t\t|\n", 2);
+	ft_putstr_fd("|\tThe correct prompt should be:\t\t|\n", 2);
+	ft_putstr_fd("|\t\t\t\t\t\t|\n", 2);
+	ft_putstr_fd("|\t\t\t\t\t\t|\n", 2);
+	ft_putstr_fd("|./pipex infile 'cmd1' ", 2);
+	ft_putstr_fd("'cmd2' 'cmdn...' outfile |\n", 2);
+	ft_putstr_fd("|\t\t\t\t\t\t|\n", 2);
+	ft_putstr_fd("-------------------------------------------------\n\n", 2);
+	exit(EXIT_FAILURE);
 }
 
-char	*ft_cmd_path(char *cmd, char **env)
+void	ft_dup_close(int fd_in, int fd_out, char **cmd, bool flag)
 {
-	int		i;
-	char	*slash;
-	char	*path;
-
-	i = -1;
-	while (env[++i])
-	{
-		slash = ft_strjoin(env[i], "/");
-		path = ft_strjoin(slash, cmd);
-		if (access(path, X_OK) == 0)
-			break ;
-		ft_free((void **)&slash);
-		ft_free((void **)&path);
-	}
-	ft_free((void **)&slash);
-	if (env[i])
-		return (path);
-	return (NULL);
+	if (fd_in != -1 && flag)
+		dup2(fd_in, STDIN_FILENO);
+	if (fd_out != -1 && flag)
+		dup2(fd_out, STDOUT_FILENO);
+	close(fd_in);
+	close(fd_out);
+	if (!flag)
+		ft_free_matrix(cmd);
 }
 
-char	**ft_get_cmd(char *cmd, char **envp)
-{
-	char	**env;
-	char	*path;
-	char	**cmd_mat;
-
-	env = ft_get_env("PATH=", envp);
-	cmd_mat = ft_split(cmd, ' ');
-	path = ft_cmd_path(cmd_mat[0], env);
-	if (path)
-	{
-		ft_free((void **)&cmd_mat[0]);
-		cmd_mat[0] = ft_strdup(path);
-	}
-	ft_free_matrix(env);
-	ft_free((void **)&path);
-	return (cmd_mat);
-}
-
-int	ft_children(char **cmd, int fd_in, int fd_out, char **envp)
+int	ft_child(char **cmd, int fd_in, int fd_out, char **envp)
 {
 	int	pid;
 	int	status;
@@ -80,28 +48,22 @@ int	ft_children(char **cmd, int fd_in, int fd_out, char **envp)
 	pid = fork();
 	if (pid == 0)
 	{
-		dup2(fd_in, STDIN_FILENO);
-		dup2(fd_out, STDOUT_FILENO);
-		close(fd_in);
-		close(fd_out);
+		ft_dup_close(fd_in, fd_out, cmd, true);
 		if (execve(cmd[0], cmd, envp) == -1)
 		{
+			perror("execve: ");
 			ft_putstr_fd("Command not found\n", 2);
-			close(fd_in);
-			close(fd_out);
-			ft_free_matrix(cmd);
-			exit(127);
+			ft_dup_close(fd_in, fd_out, cmd, false);
+			exit(EXIT_FAILURE);
 		}
 	}
-	close(fd_in);
-	close(fd_out);
+	ft_dup_close(fd_in, fd_out, cmd, false);
 	waitpid(pid, &status, 0);
 	exittino = WEXITSTATUS(status);
-	ft_free_matrix(cmd);
 	return (exittino);
 }
 
-int	ft_exec(int ac, char **av, char **envp, int fd_file2)
+int	ft_exec(int ac, char **av, char **envp, int fd_out)
 {
 	int		pipe_fd[2];
 	char	**cmd;
@@ -126,7 +88,7 @@ int	ft_exec(int ac, char **av, char **envp, int fd_file2)
 	if (pipe_fd[1] != -1)
 		close(pipe_fd[1]);
 	cmd = ft_get_cmd(av[ac], envp);
-	return (ft_children(cmd, pipe_fd[0], fd_file2, envp));
+	return (ft_child(cmd, pipe_fd[0], fd_out, envp));
 }
 
 int	main(int ac, char **av, char **envp)
@@ -135,14 +97,11 @@ int	main(int ac, char **av, char **envp)
 	int	child_status;
 
 	if (ac < 5)
-	{
-		ft_putstr_fd("Not enough argument or too many arguments\n", 2);
-		return (EXIT_FAILURE);
-	}
-	fd_file2 = open(av[--ac], O_CREAT | O_TRUNC | O_WRONLY, 0644); //file2 has to be opened no matter what
+		ft_error_message();
+	fd_file2 = open(av[--ac], O_CREAT | O_TRUNC | O_WRONLY, 0644);
 	if (fd_file2 == -1)
 		return (EXIT_FAILURE);
 	child_status = ft_exec(--ac, av, envp, fd_file2);
 	close(fd_file2);
-	return (child_status); //here the exit status of the child process will be returned
+	return (child_status);
 }
