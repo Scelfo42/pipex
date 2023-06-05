@@ -24,13 +24,14 @@
 
 typedef struct s_data
 {
-	char	**cmd1;
-	char	**cmd2;
+	int		exec_status;
 	char	**envp;
-	char	*file1;
-	char	*file2;
 }	t_data;
 
+/*	ERROR MESSAGES	*/
+void	ft_no_file_message(char *file_name);
+void	ft_error_message(void);
+/*	CMD-UTILS	*/
 char	*ft_cmd_path(char *cmd, char **env);
 char	**ft_get_cmd(char *cmd, char **envp);
 char	**ft_get_env(char *line, char **envp);

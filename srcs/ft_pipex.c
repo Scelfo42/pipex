@@ -12,21 +12,6 @@
 
 #include "../header/ft_pipex.h"
 
-void	ft_error_message(void)
-{
-	ft_putstr_fd("\nNot enough arguments given!\n\n", 2);
-	ft_putstr_fd("-------------------------------------------------\n", 2);
-	ft_putstr_fd("|\t\t\t\t\t\t|\n", 2);
-	ft_putstr_fd("|\tThe correct prompt should be:\t\t|\n", 2);
-	ft_putstr_fd("|\t\t\t\t\t\t|\n", 2);
-	ft_putstr_fd("|\t\t\t\t\t\t|\n", 2);
-	ft_putstr_fd("|./pipex infile 'cmd1' ", 2);
-	ft_putstr_fd("'cmd2' 'cmdn...' outfile |\n", 2);
-	ft_putstr_fd("|\t\t\t\t\t\t|\n", 2);
-	ft_putstr_fd("-------------------------------------------------\n\n", 2);
-	exit(EXIT_FAILURE);
-}
-
 void	ft_dup_close(int fd_in, int fd_out, char **cmd, bool flag)
 {
 	if (fd_in != -1 && flag)
@@ -51,10 +36,10 @@ int	ft_child(char **cmd, int fd_in, int fd_out, char **envp)
 		ft_dup_close(fd_in, fd_out, cmd, true);
 		if (execve(cmd[0], cmd, envp) == -1)
 		{
-			perror("execve: ");
-			ft_putstr_fd("Command not found\n", 2);
+			ft_putstr_fd(cmd[0], 2);
+			ft_putstr_fd(": command not found\n", 2);
 			ft_dup_close(fd_in, fd_out, cmd, false);
-			exit(EXIT_FAILURE);
+			exit(127);
 		}
 	}
 	ft_dup_close(fd_in, fd_out, cmd, false);
@@ -70,7 +55,7 @@ int	ft_exec(int ac, char **av, char **envp, int fd_out)
 
 	if (pipe(pipe_fd) == -1)
 	{
-		perror("pipe: ");
+		perror("pipe");
 		exit(EXIT_FAILURE);
 	}
 	if (ac > 2)
@@ -81,8 +66,8 @@ int	ft_exec(int ac, char **av, char **envp, int fd_out)
 		pipe_fd[0] = open(av[ac - 1], O_RDONLY);
 		if (pipe_fd[0] == -1)
 		{
-			ft_putstr_fd("infile: no such file or directory\n", 2);
-			return (1);
+			ft_no_file_message(av[ac - 1]);
+			return (EXIT_FAILURE);
 		}
 	}
 	if (pipe_fd[1] != -1)

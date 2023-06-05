@@ -6,11 +6,34 @@
 /*   By: chri42 <chri42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 21:27:01 by cscelfo           #+#    #+#             */
-/*   Updated: 2023/05/24 22:23:05 by chri42           ###   ########.fr       */
+/*   Updated: 2023/05/25 09:42:54 by cscelfo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../header/ft_pipex.h"
+
+void	ft_error_message(void)
+{
+	ft_putstr_fd("\nNot enough arguments given!\n\n", 2);
+	ft_putstr_fd("-------------------------------------------------\n", 2);
+	ft_putstr_fd("|\t\t\t\t\t\t|\n", 2);
+	ft_putstr_fd("|\tThe correct prompt should be:\t\t|\n", 2);
+	ft_putstr_fd("|\t\t\t\t\t\t|\n", 2);
+	ft_putstr_fd("|\t\t\t\t\t\t|\n", 2);
+	ft_putstr_fd("|./pipex infile 'cmd1' ", 2);
+	ft_putstr_fd("'cmd2' 'cmdn...' outfile |\n", 2);
+	ft_putstr_fd("|\t\t\t\t\t\t|\n", 2);
+	ft_putstr_fd("-------------------------------------------------\n\n", 2);
+	exit(EXIT_FAILURE);
+}
+
+void	ft_no_file_message(char *file_name)
+{
+	ft_putstr_fd("cscelfo-bash: ", 2);
+	ft_putstr_fd(file_name, 2);
+	ft_putstr_fd(": no such file or directory ", 2);
+	return ;
+}
 
 char	**ft_get_env(char *line, char **envp)
 {
@@ -37,7 +60,7 @@ char	*ft_cmd_path(char *cmd, char **env)
 	char	*path;
 
 	i = -1;
-    slash = NULL;
+	slash = NULL;
 	while (env && env[++i])
 	{
 		slash = ft_strjoin(env[i], "/");

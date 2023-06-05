@@ -6,7 +6,7 @@
 #    By: cscelfo <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/10 12:09:22 by cscelfo           #+#    #+#              #
-#    Updated: 2023/05/12 16:00:38 by cscelfo          ###   ########.fr        #
+#    Updated: 2023/05/27 11:23:17 by cscelfo          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -201,7 +201,7 @@ push:
 	fi
 	@echo "$(YELLOW)Committing...and..."
 	git push
-	@echo "$(GREEN)PUSHA KEKKO!$(NC)"uik5t6yt
+	@echo "$(GREEN)PUSHA KEKKO!$(NC)"
 
 norm:
 	norminette *
